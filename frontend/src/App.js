@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-const API_URL = "http://localhost:5000/api";
+const API_URL = "https://my-mvp-app-u44a.onrender.com/api";
 
 function App() {
   const [prompts, setPrompts] = useState([]);
