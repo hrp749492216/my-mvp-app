@@ -1,3 +1,5 @@
+import os
+import redis
 import requests
 import json
 from flask import Flask, session, request, jsonify
@@ -7,7 +9,8 @@ from flask_session import Session
 app = Flask(__name__)
 CORS(app, supports_credentials=True, origins=["https://my-mvp-app-1.onrender.com"])
 app.config['SECRET_KEY'] = 'change-this-secret'
-app.config['SESSION_TYPE'] = 'filesystem'
+app.config['SESSION_TYPE'] = 'redis'
+app.config['SESSION_REDIS'] = redis.from_url(os.environ.get('REDIS_URL'))
 Session(app)
 
 PROMPTS = [
