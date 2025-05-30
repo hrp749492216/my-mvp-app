@@ -11,6 +11,8 @@ CORS(app, supports_credentials=True, origins=["https://my-mvp-app-1.onrender.com
 app.config['SECRET_KEY'] = 'change-this-secret'
 app.config['SESSION_TYPE'] = 'redis'
 app.config['SESSION_REDIS'] = redis.from_url(os.environ.get('REDIS_URL'))
+app.config['SESSION_COOKIE_SECURE'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = "None"  # Required for cross-site cookies on modern browsers!
 Session(app)
 
 PROMPTS = [
