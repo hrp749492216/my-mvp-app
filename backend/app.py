@@ -5,7 +5,7 @@ from flask_cors import CORS
 from flask_session import Session
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True, origins=['http://localhost:3000'])
+CORS(app, supports_credentials=True, origins=["https://my-mvp-app-1.onrender.com"])
 app.config['SECRET_KEY'] = 'change-this-secret'
 app.config['SESSION_TYPE'] = 'filesystem'
 Session(app)
