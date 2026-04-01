@@ -7,10 +7,23 @@ from flask_cors import CORS
 from flask_session import Session
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True, origins=["https://my-mvp-app-1.onrender.com"])
-app.config['SECRET_KEY'] = 'change-this-secret'
+
+# CORS: configurable origins via environment variable (comma-separated)
+cors_origins = os.environ.get('CORS_ORIGINS', 'https://my-mvp-app-1.onrender.com')
+CORS(app, supports_credentials=True, origins=[o.strip() for o in cors_origins.split(',') if o.strip()])
+
+# SECRET_KEY: must be set via environment variable
+secret_key = os.environ.get('FLASK_SECRET_KEY')
+if not secret_key:
+    raise RuntimeError("FLASK_SECRET_KEY environment variable is required but not set.")
+app.config['SECRET_KEY'] = secret_key
+
+# Redis session configuration
 app.config['SESSION_TYPE'] = 'redis'
-app.config['SESSION_REDIS'] = redis.from_url(os.environ.get('REDIS_URL'))
+redis_url = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
+if not redis_url:
+    raise RuntimeError("REDIS_URL environment variable is empty. Provide a valid Redis URL.")
+app.config['SESSION_REDIS'] = redis.from_url(redis_url)
 app.config['SESSION_COOKIE_SECURE'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = "None"  # Required for cross-site cookies on modern browsers!
 Session(app)
@@ -177,4 +190,4 @@ def logout():
     return jsonify({'status': 'logged out'})
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=os.getenv('FLASK_DEBUG', '0') == '1')
